@@ -1,52 +1,69 @@
 import { randomUUID } from "crypto";
 import { Message } from "../types/message";
+import * as userRepository from "./auth";
 
 let messages: Message[] = [
   {
     id: "1",
     text: "Hello I'm Ellie",
     createdAt: new Date(),
-    name: "Ellie",
-    username: "ellie123",
-    url: "https://unsplash.com/ko/%EC%82%AC%EC%A7%84/%EC%9E%A5%EB%82%9C%EA%B0%90%EC%9D%84-%EB%93%A4%EA%B3%A0-%EC%9E%94%EB%94%94%EB%B0%AD%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%ED%96%89%EB%B3%B5%ED%95%9C-%EC%BD%94%EA%B8%B0-%EA%B0%9C-cWG3tiwJL5s",
+    userId: "ellie123",
   },
   {
     id: "2",
     text: "Hello I'm Jung",
     createdAt: new Date(),
-    name: "Jung",
-    username: "jung123",
-    url: "https://unsplash.com/ko/%EC%82%AC%EC%A7%84/%EC%9E%A5%EB%82%9C%EA%B0%90%EC%9D%84-%EB%93%A4%EA%B3%A0-%EC%9E%94%EB%94%94%EB%B0%AD%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%ED%96%89%EB%B3%B5%ED%95%9C-%EC%BD%94%EA%B8%B0-%EA%B0%9C-cWG3tiwJL5s",
+    userId: "jung123",
   },
 ];
 
 export async function getAll() {
-  return messages;
+  return Promise.all(
+    messages.map(async (msg) => {
+      const user = await userRepository.getById(msg.userId);
+
+      return {
+        ...msg,
+        username: user?.username,
+        name: user?.name,
+        url: user?.url,
+      };
+    })
+  );
 }
 
 export async function getAllByUsername(username: string) {
-  return messages.filter((msg) => msg.username === username);
+  return getAll().then((messages) =>
+    messages.filter((msg) => msg.username === username)
+  );
 }
 
 export async function getById(id: string) {
-  return messages.find((msg) => msg.id === id);
+  const found = messages.find((msg) => msg.id === id);
+  if (!found) {
+    return null;
+  }
+  const user = await userRepository.getById(found.userId);
+  return {
+    ...found,
+    username: user?.username,
+    name: user?.name,
+    url: user?.url,
+  };
 }
 
 export async function create(
-  message: Omit<Message, "id" | "createdAt" | "url">
+  message: Omit<Message, "id" | "createdAt">,
+  userId: string
 ) {
-  const { text, name, username } = message;
-
   const newMessage: Message = {
     id: randomUUID(),
-    text,
-    name,
-    username,
+    text: message.text,
     createdAt: new Date(),
-    url: `https://unsplash.com/ko/%EC%82%AC%EC%A7%84/%EC%9E%A5%EB%82%9C%EA%B0%90%EC%9D%84-%EB%93%A4%EA%B3%A0-%EC%9E%94%EB%94%94%EB%B0%AD%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%ED%96%89%EB%B3%B5%ED%95%9C-%EC%BD%94%EA%B8%B0-%EA%B0%9C-cWG3tiwJL5s`,
+    userId,
   };
   messages = [newMessage, ...messages];
-  return newMessage;
+  return getById(newMessage.id);
 }
 
 export async function update(id: string, text: string) {
