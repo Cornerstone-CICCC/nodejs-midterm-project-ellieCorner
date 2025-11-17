@@ -4,5 +4,5 @@ export type Message = {
   createdAt: Date;
   name: string;
   username: string;
-  url: string;
+  url?: string;
 };

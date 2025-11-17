@@ -1,4 +1,5 @@
 import type { Message } from "~/types/message";
+import { getProfileUrl, generateDefaultAvatar } from "~/utils/avatar";
 
 type Props = {
   messages: Message[];
@@ -33,11 +34,11 @@ export const MessageList = ({
           <div className="p-6">
             <div className="flex items-center mb-4">
               <img
-                src={message.url}
+                src={getProfileUrl(message.url, message.name)}
                 alt={message.name}
                 className="w-12 h-12 rounded-full object-cover mr-4"
                 onError={(e) => {
-                  e.currentTarget.src = "https://placehold.co/48";
+                  e.currentTarget.src = generateDefaultAvatar(message.name);
                 }}
               />
               <div className="flex-1">

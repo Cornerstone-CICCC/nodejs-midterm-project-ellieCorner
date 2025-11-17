@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { Message } from "../types/message";
 import * as userRepository from "./auth";
+import { getProfileUrl } from "../utils/avatar";
 
 let messages: Message[] = [];
 
@@ -13,7 +14,7 @@ export async function getAll() {
         ...msg,
         username: user?.username,
         name: user?.name,
-        url: user?.url,
+        url: getProfileUrl(user?.url, user?.name || "Unknown"),
       };
     })
   );
@@ -35,7 +36,7 @@ export async function getById(id: string) {
     ...found,
     username: user?.username,
     name: user?.name,
-    url: user?.url,
+    url: getProfileUrl(user?.url, user?.name || "Unknown"),
   };
 }
 
