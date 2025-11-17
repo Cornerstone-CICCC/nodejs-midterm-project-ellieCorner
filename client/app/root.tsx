@@ -9,6 +9,10 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import HttpClient from "./fetch/http";
+import TokenStorage from "./db/token";
+import { AuthService } from "./service/auth";
+import MessageService from "./service/message";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -41,8 +45,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+const baseURL = process.env.VITE_BASE_URL!;
+const httpClient = new HttpClient(baseURL);
+const tokenStorage = new TokenStorage();
+const authService = new AuthService(httpClient, tokenStorage);
+const messageService = new MessageService(httpClient, tokenStorage);
+
+export type AppContextType = {
+  authService: AuthService;
+  messageService: MessageService;
+};
+
 export default function App() {
-  return <Outlet />;
+  return <Outlet context={{ authService, messageService }} />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
