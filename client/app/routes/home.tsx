@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Route } from "./+types/home";
 import { useNavigate, useOutletContext } from "react-router";
 import type { AppContextType } from "~/root";
@@ -30,6 +30,15 @@ export default function Home() {
   const [signupUsername, setSignupUsername] = useState("");
   const [signupName, setSignupName] = useState("");
   const [signupUrl, setSignupUrl] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
