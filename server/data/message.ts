@@ -15,6 +15,7 @@ export async function getAll() {
         username: user?.username,
         name: user?.name,
         url: getProfileUrl(user?.url, user?.name || "Unknown"),
+        userId: msg.userId,
       };
     })
   );
@@ -37,6 +38,7 @@ export async function getById(id: string) {
     username: user?.username,
     name: user?.name,
     url: getProfileUrl(user?.url, user?.name || "Unknown"),
+    userId: found.userId,
   };
 }
 

@@ -3,6 +3,7 @@ import { getProfileUrl, generateDefaultAvatar } from "~/utils/avatar";
 
 type Props = {
   messages: Message[];
+  currentUserId?: string;
   editingId: string | null;
   editText: string;
   setEditText: (text: string) => void;
@@ -15,6 +16,7 @@ type Props = {
 
 export const MessageList = ({
   messages,
+  currentUserId,
   editingId,
   editText,
   setEditText,
@@ -88,22 +90,24 @@ export const MessageList = ({
                   {message.text}
                 </p>
 
-                <div className="flex gap-2 pt-4 border-t border-black/10">
-                  <button
-                    onClick={() => startEditing(message)}
-                    disabled={loading}
-                    className="flex-1 bg-stone-100 hover:bg-stone-200 text-orange-600 font-semibold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteMessage(message.id)}
-                    disabled={loading}
-                    className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Delete
-                  </button>
-                </div>
+                {currentUserId && currentUserId === message.userId && (
+                  <div className="flex gap-2 pt-4 border-t border-black/10">
+                    <button
+                      onClick={() => startEditing(message)}
+                      disabled={loading}
+                      className="flex-1 bg-stone-100 hover:bg-stone-200 text-orange-600 font-semibold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteMessage(message.id)}
+                      disabled={loading}
+                      className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>

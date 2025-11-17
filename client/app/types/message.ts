@@ -5,4 +5,5 @@ export type Message = {
   name: string;
   username: string;
   url?: string;
+  userId: string;
 };

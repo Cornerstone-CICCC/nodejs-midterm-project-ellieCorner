@@ -39,7 +39,7 @@ export async function me(req: Request, res: Response) {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  res.status(200).json({ token: req.token });
+  res.status(200).json({ token: req.token, userId: user.id });
 }
 
 function createJwtToken(userId: string) {

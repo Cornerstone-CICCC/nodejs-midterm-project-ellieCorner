@@ -10,11 +10,21 @@ export default function Messages() {
 
   const navigator = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [newMessageText, setNewMessageText] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const user = await authService.me();
+      setCurrentUserId(user.userId);
+    } catch (err) {
+      console.error("Failed to fetch current user:", err);
+    }
+  };
 
   const fetchMessages = async () => {
     try {
@@ -30,6 +40,7 @@ export default function Messages() {
   };
 
   useEffect(() => {
+    fetchCurrentUser();
     fetchMessages();
   }, []);
 
@@ -133,6 +144,7 @@ export default function Messages() {
 
         <MessageList
           messages={messages}
+          currentUserId={currentUserId!}
           editingId={editingId}
           editText={editText}
           setEditText={setEditText}
