@@ -2,20 +2,7 @@ import { randomUUID } from "crypto";
 import { Message } from "../types/message";
 import * as userRepository from "./auth";
 
-let messages: Message[] = [
-  {
-    id: "1",
-    text: "Hello I'm Ellie",
-    createdAt: new Date(),
-    userId: "ellie123",
-  },
-  {
-    id: "2",
-    text: "Hello I'm Jung",
-    createdAt: new Date(),
-    userId: "jung123",
-  },
-];
+let messages: Message[] = [];
 
 export async function getAll() {
   return Promise.all(

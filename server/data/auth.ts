@@ -1,15 +1,7 @@
 import { randomUUID } from "crypto";
 import { User } from "../types/user";
 
-let users: User[] = [
-  {
-    id: "ellie123",
-    username: "ellie",
-    name: "Ellie",
-    email: "ellie@example.com",
-    password: "ellie123",
-  },
-];
+let users: User[] = [];
 
 export async function create(user: Omit<User, "id">): Promise<string> {
   const newUser = { id: randomUUID(), ...user };
